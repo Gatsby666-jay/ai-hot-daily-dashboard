@@ -18,7 +18,7 @@
 
 | 文件 | 作用 |
 |---|---|
-| `ai_daily_dashboard.html` | **最终产物**：直接双击或部署即可打开的晨报仪表盘。 |
+| `index.html` | **最终产物 / 部署入口**：可直接双击打开，也是 GitHub Pages 的服务入口。 |
 | `build_dashboard.py` | 生成脚本：拉取 AI HOT 日报、映射到五版块、截断摘要、输出单文件 HTML。 |
 | `dailies_latest.json` | 当日原始日报数据快照（用于离线复现，非必需）。 |
 
@@ -32,7 +32,7 @@ curl -sS "https://aihot.virxact.com/api/v1/dailies/latest" -o dailies_latest.jso
 python3 build_dashboard.py
 
 # 3. 打开产物
-open ai_daily_dashboard.html   # Windows 可用 start ai_daily_dashboard.html
+open index.html   # Windows 可用 start index.html
 ```
 
 > 说明：AI HOT 日报接口对「当日日报不存在」的约定处理为——返回 404 时查询有界的
@@ -47,11 +47,21 @@ open ai_daily_dashboard.html   # Windows 可用 start ai_daily_dashboard.html
 
 ## 部署
 
-`ai_daily_dashboard.html` 是纯静态单文件，可直接：
+`index.html` 是纯静态单文件，可直接：
 
 - 双击用浏览器打开；
 - 拖入任意静态托管（GitHub Pages、Vercel、Netlify、Cloudflare Pages 等）；
 - 用 WorkBuddy 的 CloudStudio 部署。
+
+### GitHub Pages（本仓库已启用）
+
+本仓库已开启 GitHub Pages，从 `main` 分支根目录直接提供 `index.html`：
+
+- 线上地址：`https://gatsby666-jay.github.io/ai-hot-daily-dashboard/`
+- 如需重新生成并发布：本地跑 `python3 build_dashboard.py` 后，`git add index.html && git commit && git push` 即可，Pages 会自动重新构建。
+
+> 修改入口文件或分支后，可在仓库 **Settings → Pages** 中调整来源（Source）。
+
 
 ## 免责声明
 
