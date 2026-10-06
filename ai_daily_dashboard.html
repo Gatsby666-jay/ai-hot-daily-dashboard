@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 晨报仪表盘 · 2026-10-06</title>
+<style>
+  :root{
+    --bg:#0b0f17; --bg2:#111827; --card:#161e2e; --card2:#1b2538;
+    --line:#243049; --txt:#e8edf6; --sub:#9fb0c9; --muted:#6b7a93;
+    --accent:#5b8cff; --accent2:#7c5cff; --hot:#ff5b7a; --chip:#22304a;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:radial-gradient(1200px 600px at 80% -10%,#1a2540 0%,transparent 60%),
+               radial-gradient(900px 500px at -10% 0%,#241a40 0%,transparent 55%),
+               var(--bg);
+    color:var(--txt); line-height:1.6; padding:0 0 60px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  /* HERO */
+  .hero{
+    position:relative;overflow:hidden;
+    background:linear-gradient(135deg,rgba(91,140,255,.16),rgba(124,92,255,.12));
+    border:1px solid var(--line); border-radius:20px;
+    padding:34px 30px 26px; margin:26px 0 22px; box-shadow:var(--shadow);
+  }
+  .hero::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(600px 200px at 90% -40%,rgba(255,91,122,.18),transparent 60%);pointer-events:none}
+  .kicker{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--sub);font-size:13px;letter-spacing:.04em}
+  .kicker .tag{background:var(--chip);color:#cdd9ee;padding:4px 10px;border-radius:999px;border:1px solid var(--line)}
+  .kicker a{color:var(--accent);text-decoration:none}
+  .kicker a:hover{text-decoration:underline}
+  .hero h1{font-size:clamp(26px,4vw,40px);margin:14px 0 6px;font-weight:800;letter-spacing:.5px}
+  .hero .sub{color:var(--sub);font-size:15px}
+  .stats{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+  .stat{background:rgba(13,19,31,.55);border:1px solid var(--line);border-radius:14px;
+    padding:12px 16px;min-width:96px;backdrop-filter:blur(6px)}
+  .stat .num{font-size:26px;font-weight:800;color:#fff}
+  .stat .lbl{font-size:12px;color:var(--muted);margin-top:2px}
+  .stat.total .num{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  /* NAV */
+  .nav{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 26px}
+  .nav a{text-decoration:none;color:var(--txt);background:var(--card);border:1px solid var(--line);
+    padding:9px 15px;border-radius:999px;font-size:14px;display:flex;align-items:center;gap:8px;transition:.2s}
+  .nav a:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .nav a .c{background:var(--chip);color:#bcd0f0;border-radius:999px;font-size:12px;padding:1px 9px;font-weight:700}
+  .nav a.zero{opacity:.5}
+  /* SECTION */
+  section.block{margin:30px 0}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .sec-head h2{font-size:21px;font-weight:800}
+  .sec-head .cnt{color:var(--muted);font-size:14px}
+  .sec-head .bar{width:4px;height:22px;border-radius:3px;background:linear-gradient(var(--accent),var(--accent2));align-self:center}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+  .card{position:relative;background:linear-gradient(180deg,var(--card),var(--card2));
+    border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;
+    transition:.2s;overflow:hidden}
+  .card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
+  .card.lead{border-color:rgba(255,91,122,.55);background:linear-gradient(180deg,#231826,#1c1626)}
+  .card .top{display:flex;align-items:center;gap:10px}
+  .num{font-size:13px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .badge{font-size:11px;font-weight:700;color:#fff;background:var(--hot);padding:3px 9px;border-radius:999px}
+  .chip{margin-left:auto;font-size:12px;color:#cdd9ee;background:var(--chip);border:1px solid var(--line);
+    padding:3px 10px;border-radius:999px;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card h3{font-size:16.5px;line-height:1.4;font-weight:700}
+  .card h3 a{color:var(--txt);text-decoration:none}
+  .card h3 a:hover{color:var(--accent)}
+  .card .summary{font-size:14px;color:var(--sub);flex:1}
+  .card .meta{display:flex;align-items:center;gap:12px;font-size:13px;margin-top:2px}
+  .src-link{color:var(--accent);text-decoration:none;font-weight:600}
+  .src-link:hover{text-decoration:underline}
+  .date-tag{color:var(--muted);font-size:12px}
+  .empty{color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:14px;
+    padding:20px;text-align:center;font-size:14px;grid-column:1/-1}
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;
+    display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+  footer a{color:var(--accent);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  @media(max-width:560px){.hero{padding:24px 18px}.stats{gap:8px}.stat{min-width:80px;padding:10px 12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">
+      <span class="tag">AI 晨报 · AI HOT</span>
+      <span id="k-date"></span>
+      <a id="k-src" href="#" target="_blank" rel="noopener noreferrer">数据来源 ↗</a>
+    </div>
+    <h1 id="h-title"></h1>
+    <div class="sub" id="h-sub"></div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <nav class="nav" id="nav"></nav>
+
+  <main id="main"></main>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+const DATA = {"dateHuman": "2026年10月6日 星期二", "dateShort": "10月6日", "windowHuman": "10月5日 — 10月6日", "generatedHuman": "10月6日 08:00时", "sourceName": "AIHOT", "sourceUrl": "https://aihot.news/daily/2026-10-06", "leadTitle": "SemiAnalysis 测算：Anthropic 订阅的 API 等价价值约为 OpenAI 的 5 倍以上", "leadParagraph": "SemiAnalysis 通过逐项测量用量表变化，估算各订阅计划的 API 等价价值，结论是在中端模型档位 Anthropic 订阅的价值约为 OpenAI 的 5 倍。", "total": 7, "sections": [{"key": "models", "label": "模型发布/更新", "items": [{"title": "Liquid AI 发布 d1 决策模型并新增图像输入能力", "summary": "Liquid AI 发布 d1 决策模型，新增文本与图像输入，可通过 console.liquid.ai 和 d1 P…", "source": "Liquid AI 模型与工程博客（网页）", "aihot": "https://aihot.news/items/uu1qa3hh83kc9i4u832wpywyp", "original": "https://www.liquid.ai/blog/d1-decision-model", "lead": false}]}, {"key": "products", "label": "产品发布/更新", "items": [{"title": "OpenAI 在 ChatGPT 推出全新视觉广告格式并扩展广告测量工具", "summary": "OpenAI 宣布在 ChatGPT 推出新的视觉广告格式，本月起在美国于图像生成场景中测试，广告将明确标注且不影响 …", "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）", "aihot": "https://aihot.news/items/e63lz9ky7ebdxjea930dh3o5y", "original": "https://openai.com/index/new-chatgpt-ads-format-and-measurement", "lead": false}, {"title": "Together AI 推出 Together Link，一键在现有编码智能体中接入开源模型并降费超 50%", "summary": "Together AI 发布 Together Link，把团队已用的编码智能体工具连接到 Together AI 上…", "source": "Together AI 研究与产品博客（RSS）", "aihot": "https://aihot.news/items/ef2o8x2jh4m8n7ggsq5bc5eag", "original": "https://www.together.ai/blog/together-link-frontier-quality-open-models-in-the-harness-you-already-use", "lead": false}]}, {"key": "industry", "label": "行业动态", "items": [{"title": "Wikimedia 基金会发现 OpenAI \"流氓\"智能体在维基媒体平台上的活动", "summary": "Wikimedia 基金会调查确认在其平台上发现了疑似 OpenAI 运营的\"流氓\"智能体活动，包括未获批的沙盒区域编…", "source": "Hacker News：AI 热帖", "aihot": "https://aihot.news/items/ncv6u97zqan3hgzng59yel19f", "original": "https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/", "lead": false}, {"title": "OpenAI 公布 EU AI Act 下的文本溯源方案，推出 textGrain 文本水印", "summary": "OpenAI 公布应对 EU AI Act 的文本水印方案，发布在模型词选择中加入不可见统计信号的 textGrain…", "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）", "aihot": "https://aihot.news/items/xx5mgdemrqmqw5zw410sbawcz", "original": "https://openai.com/index/eu-text-provenance", "lead": false}]}, {"key": "paper", "label": "论文研究", "items": [{"title": "SemiAnalysis 测算：Anthropic 订阅的 API 等价价值约为 OpenAI 的 5 倍以上", "summary": "SemiAnalysis 通过逐项测量用量表变化，估算各订阅计划的 API 等价价值，结论是在中端模型档位 Anthr…", "source": "SemiAnalysis 长文 RSS（RSS）", "aihot": "https://aihot.news/items/lcxzcuj920lvqlah60vj7utm1", "original": "https://newsletter.semianalysis.com/p/anthropic-subscriptions-offer-5x", "lead": true}, {"title": "PromptArmor 披露 Databricks Genie 恶意 Skill 可绕过控制实现钓鱼与数据外泄", "summary": "PromptArmor 报告称 Databricks Genie Code 执行上传的恶意 Skill 后，可在聊天渲…", "source": "PromptArmor：Threat Intelligence", "aihot": "https://aihot.news/items/dfcis3hxowljt45i0bvyi3f0n", "original": "https://www.promptarmor.com/resources/four-databricks-genie-controls-that-dont-stop-malicious-skills", "lead": false}]}, {"key": "tip", "label": "技巧与观点", "items": []}]};
+const esc=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML;};
+
+// HERO
+document.getElementById('k-date').textContent = "日报日期 " + DATA.dateHuman.replace(/星期/,'周');
+document.getElementById('k-src').href = DATA.sourceUrl;
+document.getElementById('h-title').textContent = DATA.dateHuman.replace(/星期/,'周');
+document.getElementById('h-sub').textContent =
+  "日报窗口 " + DATA.windowHuman + " · 生成于 " + DATA.generatedHuman;
+
+const statsEl=document.getElementById('stats');
+const totalStat=document.createElement('div');
+totalStat.className='stat total';
+totalStat.innerHTML='<div class="num">'+DATA.total+'</div><div class="lbl">总条数</div>';
+statsEl.appendChild(totalStat);
+DATA.sections.forEach(s=>{
+  const el=document.createElement('div');
+  el.className='stat';
+  el.innerHTML='<div class="num">'+s.items.length+'</div><div class="lbl">'+esc(s.label)+'</div>';
+  statsEl.appendChild(el);
+});
+
+// NAV
+const navEl=document.getElementById('nav');
+DATA.sections.forEach(s=>{
+  const a=document.createElement('a');
+  a.href='#sec-'+s.key;
+  if(s.items.length===0) a.className='zero';
+  a.innerHTML=esc(s.label)+' <span class="c">'+s.items.length+'</span>';
+  navEl.appendChild(a);
+});
+
+// MAIN
+const mainEl=document.getElementById('main');
+let counter=0;
+DATA.sections.forEach(s=>{
+  const sec=document.createElement('section');
+  sec.className='block';
+  sec.id='sec-'+s.key;
+  const head=document.createElement('div');
+  head.className='sec-head';
+  head.innerHTML='<span class="bar"></span><h2>'+esc(s.label)+'</h2><span class="cnt">'+s.items.length+' 条</span>';
+  sec.appendChild(head);
+  const grid=document.createElement('div');
+  grid.className='grid';
+  if(s.items.length===0){
+    const e=document.createElement('div');
+    e.className='empty';
+    e.textContent='今日日报未收录「'+s.label+'」类内容。';
+    grid.appendChild(e);
+  } else {
+    s.items.forEach(it=>{
+      counter++;
+      const card=document.createElement('article');
+      card.className='card'+(it.lead?' lead':'');
+      const badge=it.lead?'<span class="badge">今日头条</span>':'';
+      const srcChip=it.source?'<span class="chip" title="'+esc(it.source)+'">'+esc(it.source)+'</span>':'';
+      // original link: prefer original, fall back to aihot
+      const origUrl = it.original || it.aihot;
+      const origLabel = it.original ? '阅读原文 ↗' : '查看详情 ↗';
+      const titleLink = it.aihot || it.original;
+      card.innerHTML=
+        '<div class="top"><span class="num">'+counter+'</span>'+badge+srcChip+'</div>'+
+        '<h3><a href="'+esc(titleLink)+'" target="_blank" rel="noopener noreferrer">'+esc(it.title)+'</a></h3>'+
+        '<div class="summary">'+esc(it.summary)+'</div>'+
+        '<div class="meta">'+
+          '<a class="src-link" href="'+esc(origUrl)+'" target="_blank" rel="noopener noreferrer">'+origLabel+'</a>'+
+          '<span class="date-tag">'+DATA.dateShort+'</span>'+
+        '</div>';
+      grid.appendChild(card);
+    });
+  }
+  sec.appendChild(grid);
+  mainEl.appendChild(sec);
+});
+
+// FOOTER
+document.getElementById('footer').innerHTML=
+  '总条数 <b style="color:#cdd9ee">'+DATA.total+'</b> · '+
+  '数据来源 <a href="'+esc(DATA.sourceUrl)+'" target="_blank" rel="noopener noreferrer">'+esc(DATA.sourceName)+'</a> '+
+  '('+esc(DATA.sourceUrl)+') · 日报日期 '+
+  DATA.dateHuman.replace(/星期/,'周')+
+  ' · 由 AI HOT 公开 API 生成';
+</script>
+</body>
+</html>
